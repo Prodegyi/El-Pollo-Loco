@@ -15,7 +15,7 @@ window.addEventListener("keydown",(e) => {
         Keyboard.Right = true;
     }
 
-    if(e.keyCode == 64){
+    if(e.keyCode == 65){
         Keyboard.Left = true;
     }
 
@@ -38,7 +38,7 @@ window.addEventListener("keyup",(e) => {
         Keyboard.Right = false;
     }
 
-    if(e.keyCode == 64){
+    if(e.keyCode == 65){
         Keyboard.Left = false;
     }
 

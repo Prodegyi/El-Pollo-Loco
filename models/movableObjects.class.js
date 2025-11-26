@@ -6,6 +6,7 @@ class moveableObject{
     img;
     ImageCache = [];
     speed = 0.25;
+    otherDirection = false;
 
     loadImage(path){
         this.img = new Image();
@@ -29,5 +30,12 @@ class moveableObject{
         this.x -= this.speed; // Geschwindigkeit der Wolke
     }, 1000 / 60); // 60 FPS
         console.log("move left");
+    }
+
+    playAnimation(img){
+        let i = this.currentImage % this.IMAGES_WALKING.length;
+        let path = img[i];
+        this.img = this.ImageCache[path];
+        this.currentImage++;
     }
 }
