@@ -13,10 +13,19 @@ class World {
         this.Keyboard = Keyboard;
         this.Draw();
         this.setWorld();
+        this.checkCollisions();
     }
 
     setWorld() {
         this.character.world = this;
+    }
+
+    checkCollisions() {
+        setInterval(() => {
+            this.level.enemies.forEach((enemy) => { 
+                this.character.isColliding(enemy) ? console.log('Collision') : null;
+            });
+        }, 5);
     }
 
     // Draw() wird immer wieder aufgerufen
@@ -45,18 +54,25 @@ class World {
         const flip = mo.otherDirection;
 
         if (flip) {
-            this.ctx.save();
-            this.ctx.translate(mo.width, 0);
-            this.ctx.scale(-1, 1);
-            mo.x = mo.x * -1;
+          this.flipImage(mo);
         }
 
-        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
-
-        console.log(endboss);
+        mo.draw(this.ctx) 
+        mo.drawFrame(this.ctx);
+        
         if (flip) {
-            mo.x = mo.x * -1;
-            this.ctx.restore();
+         this.flipImageBack(mo);
         }
+    }
+
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.width, 0);
+        this.ctx.scale(-1, 1);
+        mo.x = mo.x * -1;
+    }
+
+    flipImageBack(mo) {   mo.x = mo.x * -1;
+            this.ctx.restore();
     }
 }

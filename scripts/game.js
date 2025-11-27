@@ -6,8 +6,6 @@ function init() {
     canvas = document.getElementById('canvas');
     world = new World(canvas, Keyboard);
 
-    console.log(world.character);
-
 }
 
 window.addEventListener("keydown",(e) => {
@@ -19,7 +17,7 @@ window.addEventListener("keydown",(e) => {
         Keyboard.Left = true;
     }
 
-    if(e.keycode == 32){
+    if(e.keyCode == 32){
         Keyboard.Space = true;
     }
 
@@ -30,7 +28,6 @@ window.addEventListener("keydown",(e) => {
     if(e.keyCode == 83){
         Keyboard.Down = true;
     }
-    console.log(e);
 });
 
 window.addEventListener("keyup",(e) => {
@@ -42,7 +39,7 @@ window.addEventListener("keyup",(e) => {
         Keyboard.Left = false;
     }
 
-    if(e.keycode == 32){
+    if(e.keyCode == 32){
         Keyboard.Space = false;
     }
 
