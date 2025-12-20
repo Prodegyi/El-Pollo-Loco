@@ -14,6 +14,7 @@ class endboss extends moveableObject {
     "../img/img_pollo_locco/img/4_enemie_boss_chicken/2_alert/G11.png",
     "../img/img_pollo_locco/img/4_enemie_boss_chicken/2_alert/G12.png",
   ];
+  IMAGES_WALKING
   currentImage = 0;
 
   constructor() {
