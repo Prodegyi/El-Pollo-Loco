@@ -1,6 +1,6 @@
-class keyboard {
-    Left = false;
-    Right = false;
-    Space = false;
-    E_button = false;
+class Keyboard {
+    LEFT = false;
+    RIGHT = false;
+    SPACE = false;
+    E_BUTTON = false;
 }

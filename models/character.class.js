@@ -1,9 +1,12 @@
-class Character extends moveableObject {
+class Character extends MoveableObject {
+  isJumping = false;
   height = 280;
   width = 140;
   y = 180;
   speed = 5;
   speedY = 0;
+  otherDirection = false;
+
   IMAGES_WALKING = [
     "../img/img_pollo_locco/img/2_character_pepe/2_walk/W-21.png",
     "../img/img_pollo_locco/img/2_character_pepe/2_walk/W-22.png",
@@ -43,36 +46,82 @@ class Character extends moveableObject {
 
   constructor(world) {
     super().loadImage(
-      "../img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-1.png"
+      "../img/img_pollo_locco/img/2_character_pepe/1_idle/idle/I-1.png",
     );
     this.world = world;
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
-    this.loadImages(this.IMAGES_HURT); 
+    this.loadImages(this.IMAGES_HURT);
     this.applyGravity();
     this.animate();
-  };
+  }
 
   animate() {
-    animate() {
+    this.startMovementLoop();
+    this.startAnimationLoop();
+  }
+
+  startMovementLoop() {
     setInterval(() => {
-        this.handleMovement()
+      this.handleMovement();
     }, 1000 / 60);
   }
+
+  startAnimationLoop() {
+    setInterval(() => {
+
+      if (this.isDead()) {
+        this.playAnimation(this.IMAGES_DEAD);
+        return;
+      }
+
+      if (this.isHurt()) {
+        this.playAnimation(this.IMAGES_HURT);
+        return;
+      }
+
+      if (this.isAboveGround()) {
+        this.playAnimation(this.IMAGES_JUMPING);
+        return;
+      }
+
+      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+        this.playAnimation(this.IMAGES_WALKING);
+        return;
+      }
+    }, 200);
   }
 
   handleMovement() {
-    if (this.world.keyboard.RIGHT) {
+    const levelStart = this.world.level.levelStartX;
+    const levelEnd = this.world.level.levelEndX;
+
+    if (
+        this.world.keyboard.RIGHT &&
+        this.x < levelEnd - this.width
+    ) {
         this.moveRight();
+        this.otherDirection = false;
     }
 
-    if (this.world.keyboard.LEFT) {
+    if (
+        this.world.keyboard.LEFT &&
+        this.x > levelStart
+    ) {
         this.moveLeft();
+        this.otherDirection = true;
     }
 
-    if (this.world.keyboard.SPACE) {
+    if (
+        this.world.keyboard.SPACE &&
+        !this.isJumping &&
+        !this.isAboveGround()
+    ) {
         this.jump();
     }
 }
+
+
+
 }

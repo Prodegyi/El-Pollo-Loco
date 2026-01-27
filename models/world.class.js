@@ -1,101 +1,111 @@
-class world {
+class World {
+  constructor(canvas, keyboard) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
+    this.keyboard = keyboard;
 
-    character = new Character();
-    level = new level1();
-    canvas;
-    ctx;
-    Keyboard;
-    camera_x = -100
-    statusbar = new Statusbar();
-    throwAbleObjects = [new ThrowableObject()];
+    this.camera_x = -100;
 
-    constructor(canvas, Keyboard) {
-        this.ctx = canvas.getContext('2d');
-        this.canvas = canvas;
-        this.keyboard = new Keyboard();
-        this.character = new Character(this);
-        this.Draw();
-        this.setWorld();
-        this.run();
+    this.level = level1;
+    this.character = new Character(this);
+    this.statusbar = new Statusbar();
+    this.throwableObjects = [];
+
+    this.draw();
+    this.run();
+  }
+
+  run() {
+    setInterval(() => {
+      this.checkCollisions();
+      this.checkThrowObjects();
+    }, 1000 / 60);
+  }
+
+  checkThrowObjects() {
+    if (this.keyboard.E) {
+      const bottle = new ThrowableObject(this.character.x, this.character.y);
+      this.throwableObjects.push(bottle);
+    }
+  }
+
+  checkCollisions() {
+    this.level.enemies.forEach((enemy) => {
+      if (this.character.isColliding(enemy)) {
+        this.character.hit();
+        this.statusbar.setPercentage(this.character.energy);
+      }
+    });
+  }
+
+  draw() {
+    this.updateCamera();
+
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.ctx.translate(this.camera_x, 0);
+    this.addObjectsToMap(this.level.backgroundObjects);
+    this.addObjectsToMap(this.level.clouds);
+    this.ctx.translate(-this.camera_x, 0);
+
+    this.addToMap(this.statusbar);
+
+    this.ctx.translate(this.camera_x, 0);
+    this.addToMap(this.character);
+    this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.throwableObjects);
+    this.ctx.translate(-this.camera_x, 0);
+
+    requestAnimationFrame(() => this.draw());
+  }
+
+  addObjectsToMap(objects) {
+    if (!objects || !Array.isArray(objects)) {
+      return;
     }
 
-    setWorld() {
-        this.character.world = this;
+    objects.forEach((o) => {
+      this.addToMap(o);
+    });
+  }
+
+  addToMap(mo) {
+    if (mo.otherDirection) {
+      this.flipImage(mo);
     }
 
-    run() {
-        setInterval(() => {
-          
-            this.checkCollisions();
-            this.checkThrowObjects(); 
-        }, 1000/4);
+    mo.draw(this.ctx);
+    mo.drawFrame(this.ctx);
+
+    if (mo.otherDirection) {
+      this.flipImageBack(mo);
     }
+  }
 
-    checkThrowObjects(){
-        if (this.Keyboard.E_button) {
-            let bottle = new ThrowableObject(this.character.x, this.character.y);
-            this.throwAbleObjects.push(bottle);
-        }
-    }
+  flipImage(mo) {
+    this.ctx.save();
+    this.ctx.translate(mo.width, 0);
+    this.ctx.scale(-1, 1);
+    mo.x = mo.x * -1;
+  }
 
-    checkCollisions(){
-          this.level.enemies.forEach((enemy) => { 
-               if (this.character.isColliding(enemy)) {
-                this.character.hit();
-                this.statusbar.setPercentage(this.character.energy)
-               } ;
-            });
-    }
-    // Draw() wird immer wieder aufgerufen
-    Draw() {
-        
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.translate(this.camera_x, 0);
-        this.addObjectsToMap(this.level.backgroundsObjects);
-        this.addObjectsToMap(this.level.clouds);
-        this.ctx.translate(-this.camera_x, 0);
-        this.addToMap(this.statusbar);
-        this.ctx.translate(this.camera_x, 0);
-        this.addToMap(this.character);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.throwAbleObjects)
-        this.ctx.translate(-this.camera_x, 0);
+  flipImageBack(mo) {
+    mo.x = mo.x * -1;
+    this.ctx.restore();
+  }
 
-        let self = this;
-        requestAnimationFrame(function () {
-            self.Draw();
-        });
-    }
+  updateCamera() {
+    const cameraOffset = this.canvas.width / 2 - this.character.width / 2;
 
-    addObjectsToMap(objects) {
-        objects.forEach(o => {
-            this.addToMap(o);
-        });
-    }
+    const maxLeft = 0;
+    const maxRight = -this.level.levelEndX + this.canvas.width;
 
-    addToMap(mo) {
-        const flip = mo.otherDirection;
+    let cameraX = -this.character.x + cameraOffset;
 
-        if (flip) {
-          this.flipImage(mo);
-        }
+    cameraX = Math.min(maxLeft, cameraX);
+    cameraX = Math.max(maxRight, cameraX);
 
-        mo.draw(this.ctx) 
-        mo.drawFrame(this.ctx);
-        
-        if (flip) {
-         this.flipImageBack(mo);
-        }
-    }
+    this.camera_x = cameraX;
+}
 
-    flipImage(mo) {
-        this.ctx.save();
-        this.ctx.translate(mo.width, 0);
-        this.ctx.scale(-1, 1);
-        mo.x = mo.x * -1;
-    }
-
-    flipImageBack(mo) {   mo.x = mo.x * -1;
-            this.ctx.restore();
-    }
 }

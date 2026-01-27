@@ -1,4 +1,4 @@
-class Statusbar extends drawableObject{
+class Statusbar extends DrawableObject {
 
     HP_BAR_IMAGES = [
         "img/img_pollo_locco/img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png",
@@ -9,39 +9,31 @@ class Statusbar extends drawableObject{
         "img/img_pollo_locco/img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png",
     ];
 
-    Percentage = 100;
+    percentage = 100;
 
-constructor() {
-    super();
-    this.loadImages(this.HP_BAR_IMAGES);
-    this.setPercentage(100);
-    this.x = 20;
-    this.y = 0;
-    this.width = 300;
-    this.height = 80;
-}
+    constructor() {
+        super();
+        this.loadImages(this.HP_BAR_IMAGES);
+        this.loadImage(this.HP_BAR_IMAGES[5]);
 
-setPercentage(Percentage){
-    this.Percentage = Percentage;
-    let path = this.HP_BAR_IMAGES[this.resolveImageIndex()]
-    this.img = this.ImageCache[path];
-    
-}
+        this.x = 20;
+        this.y = 0;
+        this.width = 300;
+        this.height = 80;
+    }
 
-resolveImageIndex(){
-     if(this.Percentage == 100){
-        return 5;
-    } else if (this.Percentage > 80) {
-        return 4;
-    } else    if(this.Percentage > 60){
-        return 3;
-    } else if (this.Percentage > 40) {
-        return 2;
-    } else if (this.Percentage > 20) {
-        return 1;
-    } else if (this.Percentage > 0) {
+    setPercentage(percentage) {
+        this.percentage = percentage;
+        const path = this.HP_BAR_IMAGES[this.resolveImageIndex()];
+        this.img = this.imageCache[path];
+    }
+
+    resolveImageIndex() {
+        if (this.percentage === 100) return 5;
+        if (this.percentage > 80) return 4;
+        if (this.percentage > 60) return 3;
+        if (this.percentage > 40) return 2;
+        if (this.percentage > 20) return 1;
         return 0;
     }
-};
-
 }

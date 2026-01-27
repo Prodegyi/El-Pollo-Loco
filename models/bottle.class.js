@@ -1,4 +1,4 @@
-class ThrowableObject extends moveableObject {
+class ThrowableObject extends MoveableObject {
   speedX = 30;
   speedY = 30;
 

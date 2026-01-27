@@ -1,4 +1,4 @@
-class moveableObject extends drawableObject{
+class MoveableObject extends DrawableObject{
     speed = 0.25;
     speedY = 0;
     accelaration = 2.5;
@@ -11,7 +11,11 @@ class moveableObject extends drawableObject{
             if(this.isAboveGround() || this.speedY < 0){
             this.y += this.speedY;
             this.speedY += this.accelaration;
-            }
+            }else {
+            this.speedY = 0;
+            this.isJumping = false;
+        }
+
         }, 1000 / 25);
     }
 
@@ -31,15 +35,26 @@ class moveableObject extends drawableObject{
         this.x -= this.speed;
     }
 
-    playAnimation(img){
-        let i = this.currentImage % img.length;
-        let path = img[i];
-        this.img = this.ImageCache[path];
-        this.currentImage++;
+    playAnimation(images) {
+    if (!images || images.length === 0) {
+        return;
     }
+
+    const path = images[this.currentImage % images.length];
+    const img = this.imageCache[path];
+
+    if (!img) {
+        return;
+    }
+
+    this.img = img;
+    this.currentImage++;
+}
+
 
     jump(){
         this.speedY = -32;
+        this.isJumping = true;
     }
 
     isColliding(mo){ 

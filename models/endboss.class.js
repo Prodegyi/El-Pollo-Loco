@@ -6,7 +6,7 @@ const BOSS_STATES = {
   DEAD: 'dead'
 };
 
-class Endboss extends moveableObject {
+class Endboss extends MoveableObject {
   y = 210;
   x = 1250;
   width = 300;
